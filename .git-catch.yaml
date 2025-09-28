@@ -1,5 +1,4 @@
----
-dir: utils/git/hooks
+dir: examples/one
 
 hooks:
   pre-commit: []
