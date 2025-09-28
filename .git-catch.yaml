@@ -1,6 +1,6 @@
-dir: examples/one
+hooks_dir: examples/one
 
-hooks:
+extra_hooks:
   pre-commit: []
   # - test/pre-commit-1
   # - test/pre-commit-2

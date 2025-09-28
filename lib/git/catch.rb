@@ -11,9 +11,10 @@ module Git
         @logger.formatter = proc do |type, time, name, message|
           "[#{time}]  #{type.ljust(5)}  #{message}\n"
         end
+
         @config = YAML.load_file("./.git-catch.yaml")
-        @dir    = @config.fetch("dir", nil)
-        @hooks  = [
+        @hooks_dir = @config.fetch("hooks_dir", nil)
+        @hooks_names  = [
           "applypatch-msg",
           "commit-msg",
           "post-update",
@@ -28,7 +29,7 @@ module Git
 
       def init
         @config.fetch("hooks", {}).each do |name, _|
-          if !@hooks.include? name
+          if !@hooks_names.include? name
             @logger.error "Hook #{name} is not known."
             next
           end
@@ -39,7 +40,7 @@ module Git
       def list
         data = {}
         @config.fetch("hooks", {}).each do |name, _|
-          if !@hooks.include? name
+          if !@hooks_names.include? name
             @logger.error "Hook #{name} is not known."
             next
           end
@@ -52,7 +53,7 @@ module Git
 
       private
       def files(name)
-        files = @config.fetch("hooks", {}).fetch(name, [])
+        files = @config.fetch("extra_hooks", {}).fetch(name, [])
         files = (files + dir_files(@dir, name)).uniq if @dir
         files
       end
@@ -72,9 +73,9 @@ module Git
         @logger.info "File #{file} written"
       end
 
-      def dir_files(dir, hook)
+      def dir_files(hooks_dir, hook_name)
         files = []
-        Dir["#{dir}/#{hook}/**/*"].each do |f|
+        Dir["#{hooks_dir}/#{hook_name}/**/*"].each do |f|
           if not File.executable? f
             @logger.warn "File #{f} is not executable"
             next
