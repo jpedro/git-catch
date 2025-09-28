@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift File.expand_path('../../lib', File.realpath(__FILE__))
+
+require "thor"
+require "git/catch"
+
+module Git
+  module Catch
+    class Cli < Thor
+
+      def initialize(args = [], local_options = {}, config = {})
+        super(args)
+        @runner = Runner.new
+      end
+
+      desc "init", "Hooks up the git hooks"
+      def init
+        puts "==> Initializing git hooks"
+        @runner.init()
+      end
+
+      desc "ls", "Lists all git hooks"
+      def ls
+        puts "==> Listing all git hooks"
+        @runner.list().each do |hook, files|
+          puts "#{hook}:"
+          files.each do |f|
+            puts "- #{f}"
+          end
+          puts
+        end
+      end
+
+    end
+  end
+end
+
+Git::Catch::Cli.start(ARGV)

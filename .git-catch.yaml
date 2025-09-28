@@ -1,0 +1,7 @@
+---
+dir: utils/git/hooks
+
+hooks:
+  pre-commit:
+    - test/pre-commit-1
+    - test/pre-commit-2
