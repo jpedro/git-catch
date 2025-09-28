@@ -61,7 +61,7 @@ module Git
         file = ".git/hooks/#{name}"
         content = <<~EOS
           #!/usr/bin/env bash
-          set -e
+          set -euo pipefail
 
         EOS
         files.each do |file|
